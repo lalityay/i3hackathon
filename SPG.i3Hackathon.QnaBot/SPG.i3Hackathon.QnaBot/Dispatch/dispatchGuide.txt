@@ -1,0 +1,12 @@
+﻿https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-tutorial-dispatch?view=azure-bot-service-4.0&tabs=cs
+
+https://stackoverflow.com/questions/57617720/chatbot-with-multiple-qna-maker-knowledge-base-and-intents-in-luis-sdk-v4-c-sh
+
+
+dispatch init -n qnadata --luisAuthoringKey "de5b63ae8de44a2793d452dff5250e0b" --luisAuthoringRegion westus
+
+dispatch add -t qna -i "63a1f89b-7151-475c-a7c1-8debbc90a5b7" -n "People" -k "d19ec1ad9cb541a1968e61b2cee70225" --intentName People
+
+dispatch add -t qna -i "88f5af41-24e9-4149-947c-c1e823558cd1" -n "Governance" -k "d19ec1ad9cb541a1968e61b2cee70225" --intentName Governance
+
+dispatch create

@@ -1,4 +1,5 @@
-﻿using Microsoft.Bot.Builder.AI.QnA;
+﻿using Microsoft.Bot.Builder.AI.Luis;
+using Microsoft.Bot.Builder.AI.QnA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,10 @@ namespace SPG.i3Hackathon.QnaBot.Services
 {
     public interface IBotServices
     {
-        QnAMaker QnAMakerService { get; }
+        Dictionary<string, QnAMaker> QnAMakerServiceList { get; }
+
+        LuisRecognizer Dispatch { get; }
+
+        QnAMaker GetServiceForIntent(string intent);
     }
 }

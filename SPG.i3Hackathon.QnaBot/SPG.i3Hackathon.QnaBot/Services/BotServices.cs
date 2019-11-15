@@ -1,5 +1,7 @@
-﻿using Microsoft.Bot.Builder.AI.QnA;
+﻿using Microsoft.Bot.Builder.AI.Luis;
+using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace SPG.i3Hackathon.QnaBot.Services
 {
@@ -7,15 +9,36 @@ namespace SPG.i3Hackathon.QnaBot.Services
     {
         public BotServices(IConfiguration configuration)
         {
-            QnAMakerService = new QnAMaker(new QnAMakerEndpoint
+            QnAMakerServiceList = new Dictionary<string, QnAMaker>();
+
+            Dispatch = new LuisRecognizer(new LuisApplication(
+                configuration["LuisAppId"],
+                configuration["LuisAPIKey"],
+                $"https://{configuration["LuisAPIHostName"]}.api.cognitive.microsoft.com"),
+                new LuisPredictionOptions { IncludeAllIntents = true, IncludeInstanceData = true },
+                includeApiResults: true);
+
+            foreach (var kbitem in KbLuisMap.GetMap())
             {
-                KnowledgeBaseId = configuration["QnAKnowledgebaseId"],
-                EndpointKey = configuration["QnAEndpointKey"],
-                Host = GetHostname(configuration["QnAEndpointHostName"])
-            });
+                QnAMakerServiceList.Add(kbitem.Key, new QnAMaker(new QnAMakerEndpoint
+                {
+                    KnowledgeBaseId = kbitem.Value,
+                    EndpointKey = configuration["QnAEndpointKey"],
+                    Host = GetHostname(configuration["QnAEndpointHostName"])
+                }));
+            }
+
+
         }
 
-        public QnAMaker QnAMakerService { get; private set; }
+        public QnAMaker GetServiceForIntent(string intent)
+        {
+            return QnAMakerServiceList[intent];
+        }
+
+        public Dictionary<string, QnAMaker> QnAMakerServiceList { get; private set; }
+
+        public LuisRecognizer Dispatch { get; private set; }
 
         private static string GetHostname(string hostname)
         {

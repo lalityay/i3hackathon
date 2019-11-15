@@ -121,7 +121,7 @@ namespace SPG.i3Hackathon.QnaBot.Dialogs
             }
 
             // Calling QnAMaker to get response.
-            var response = await _services.QnAMakerService.GetAnswersRawAsync(stepContext.Context, qnaMakerOptions).ConfigureAwait(false);
+            var response = await _services.QnAMakerServiceList["People"].GetAnswersRawAsync(stepContext.Context, qnaMakerOptions).ConfigureAwait(false);
 
             // Resetting previous query.
             dialogOptions[PreviousQnAId] = -1;
@@ -136,7 +136,7 @@ namespace SPG.i3Hackathon.QnaBot.Dialogs
             if (isActiveLearningEnabled && response.Answers.Any() && response.Answers.First().Score <= maximumScoreForLowScoreVariation)
             {
                 // Get filtered list of the response that support low score variation criteria.
-                response.Answers = _services.QnAMakerService.GetLowScoreVariation(response.Answers);
+                response.Answers = _services.QnAMakerServiceList["People"].GetLowScoreVariation(response.Answers);
 
                 if (response.Answers.Count() > 1)
                 {
@@ -198,7 +198,7 @@ namespace SPG.i3Hackathon.QnaBot.Dialogs
                     var feedbackRecords = new FeedbackRecords { Records = records };
 
                     // Call Active Learning Train API
-                    await _services.QnAMakerService.CallTrainAsync(feedbackRecords).ConfigureAwait(false);
+                    await _services.QnAMakerServiceList["People"].CallTrainAsync(feedbackRecords).ConfigureAwait(false);
 
                     return await stepContext.NextAsync(new List<QueryResult>() { qnaResult }, cancellationToken).ConfigureAwait(false);
                 }
