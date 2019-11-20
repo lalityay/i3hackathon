@@ -14,7 +14,7 @@ namespace SPG.i3Hackathon.QnaBot.Services
             Dispatch = new LuisRecognizer(new LuisApplication(
                 configuration["LuisAppId"],
                 configuration["LuisAPIKey"],
-                $"https://{configuration["LuisAPIHostName"]}.api.cognitive.microsoft.com"),
+                $"https://{configuration["LuisAPIHostName"]}"),
                 new LuisPredictionOptions { IncludeAllIntents = true, IncludeInstanceData = true },
                 includeApiResults: true);
 
