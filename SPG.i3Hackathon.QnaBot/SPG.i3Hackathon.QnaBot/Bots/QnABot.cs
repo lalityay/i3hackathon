@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
@@ -37,8 +38,8 @@ namespace SPG.i3Hackathon.QnaBot.Bots
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            // First, we use the dispatch model to determine which cognitive service (LUIS or QnA) to use.
-            var recognizerResult = await _botServices.Dispatch.RecognizeAsync(turnContext, cancellationToken);
+            // First, we use the dispatch model to determine which QnA KB to use.
+            var recognizerResult = await _botServices.Dispatch.RecognizeAsync(turnContext, new LuisPredictionOptions { IncludeAllIntents = true, Staging = true }, cancellationToken);
             // Top intent tell us which cognitive service to use.
             var topIntent = recognizerResult.GetTopScoringIntent();
 
